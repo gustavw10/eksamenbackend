@@ -90,7 +90,7 @@ public class UserResourceTest {
                 .get("/info/").then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("msg", equalTo("Hello World"));
+                .body("msg", equalTo("Hello World: eksamen"));
     }
 
     @Test
