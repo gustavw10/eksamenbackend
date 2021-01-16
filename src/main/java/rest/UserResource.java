@@ -52,7 +52,7 @@ public class UserResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public String demo() {
-        return "{\"msg\":\"Hello World, with startcode test\"}";
+        return "{\"msg\":\"Hello World: eksamen\"}";
     }
     
     @Path("count")
