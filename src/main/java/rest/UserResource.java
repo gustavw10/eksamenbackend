@@ -47,7 +47,7 @@ public class UserResource {
 
     @Context
     SecurityContext securityContext;
-    
+    //added
     
     @GET
     @Produces({MediaType.APPLICATION_JSON})
