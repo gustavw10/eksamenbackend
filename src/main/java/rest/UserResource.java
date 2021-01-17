@@ -7,6 +7,11 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dtos.BreedCombinedDTO;
+import dtos.BreedDTO;
+import dtos.BreedFactDTO;
+import dtos.BreedInfoDTO;
+import dtos.BreedLinkDTO;
 import dtos.UsersDTO;
 //import entities.Breed;
 import entities.Dog;
@@ -155,14 +160,41 @@ public class UserResource {
     @RolesAllowed({"user", "admin"})
     public String addDog(@PathParam("id") long id, String dog) {
         
-        //String thisuser = securityContext.getUserPrincipal().getName();
-        String thisuser = "admin";
+        String thisuser = securityContext.getUserPrincipal().getName();
+        //String thisuser = "admin";
         EntityManager em = EMF.createEntityManager();
         
         DogDTO dogToAdd = GSON.fromJson(dog, DogDTO.class);
         DogDTO dogReturn = DOGFACADE.addUserDog(dogToAdd, thisuser, id);
              
         return GSON.toJson(dogReturn);
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("breeds")
+    public String getBreeds() throws IOException{
+        String breeds = HttpUtils.fetchData("https://dog-info.cooljavascript.dk/api/breed");
+        
+        BreedDTO breed = GSON.fromJson(breeds, BreedDTO.class);
+        return GSON.toJson(breed);
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("breedInfo/{id}")
+    public String getBreedInfo(@PathParam("id") String id) throws IOException{
+        String breed1 = HttpUtils.fetchData("https://dog-info.cooljavascript.dk/api/breed/" + id);
+        String breed2 = HttpUtils.fetchData("https://dog-image.cooljavascript.dk/api/breed/random-image/" + id);
+        String breed3 = HttpUtils.fetchData("https://dog-api.kinduff.com/api/facts");
+        
+        BreedInfoDTO breedInfo = GSON.fromJson(breed1, BreedInfoDTO.class);
+        BreedLinkDTO breedLink = GSON.fromJson(breed2, BreedLinkDTO.class);
+        BreedFactDTO breedFact = GSON.fromJson(breed3, BreedFactDTO.class);
+        
+        BreedCombinedDTO comb = new BreedCombinedDTO(breedFact, breedInfo, breedLink);
+        BreedCombinedDTO test = new BreedCombinedDTO("boxer", "info here", "wik", "img", "fact here");
+        return GSON.toJson(comb);
     }
     
     
@@ -192,7 +224,7 @@ public class UserResource {
         
         EntityManager em = EMF.createEntityManager();
         //DogsDTO dogs = DOGFACADE.getUserDogs(thisuser);
-        String let ="{\"name\": \"TOOGOOD\",\n" +
+        String let ="{\"name\": \"justforSure\",\n" +
 "            \"dateOfBirth\": \"01/11/2011\",\n" +
 "            \"info\": \"newest\"}";
         
