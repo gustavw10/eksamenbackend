@@ -2,8 +2,10 @@ package facades;
 
 import dtos.UsersDTO;
 import entities.User;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import securityerrorhandling.AuthenticationException;
 
 public class UserFacade {
@@ -21,7 +23,10 @@ public class UserFacade {
         }
         return instance;
     }
-        
+    
+    private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
         
     public long getUserCount(){
         EntityManager em = emf.createEntityManager();
@@ -55,5 +60,4 @@ public class UserFacade {
             em.close();
         }
     }
-    
 }

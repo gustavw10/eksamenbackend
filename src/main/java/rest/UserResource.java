@@ -8,7 +8,13 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dtos.UsersDTO;
+//import entities.Breed;
+import entities.Dog;
 import entities.User;
+import dtos.DogsDTO;
+import dtos.DogDTO;
+import entities.Breed;
+import facades.DogFacade;
 import facades.UserFacade;
 import java.io.IOException;
 import java.util.List;
@@ -40,6 +46,7 @@ public class UserResource {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
        
     private static final UserFacade FACADE =  UserFacade.getUserFacade(EMF);
+    private static final DogFacade DOGFACADE = DogFacade.getDogFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     
     @Context
@@ -99,6 +106,49 @@ public class UserResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("addDog")
+    @RolesAllowed({"user", "admin"})
+    public String addDog(String dogo, long breed) {
+//        String thisuser = securityContext.getUserPrincipal().getName();
+        String thisuser = "user";
+        EntityManager em = EMF.createEntityManager();
+        User user = em.find(User.class, thisuser);
+        Breed br = em.find(Breed.class, breed);
+        DogDTO dog = GSON.fromJson(dogo, DogDTO.class);
+        em.getTransaction().begin();
+        
+        Dog dogToAdd = new Dog(dog.getName(), dog.getDateOfBirth(), dog.getInfo());  
+        dogToAdd.setBoth(user, br);
+        
+        System.out.println("user: " + dogToAdd.getUser().getUserName());
+        System.out.println("breed: " + dogToAdd.getBreed().getName());
+        
+        em.persist(dogToAdd);
+        em.getTransaction().commit();
+        
+//        
+//        DogDTO dogToAdd = GSON.fromJson(dog, DogDTO.class);
+//        DogDTO dogFinal = DOGFACADE.addDog(dogToAdd, user, breed);
+        
+//        return GSON.toJson(dogFinal);
+        return "";
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("dogs")
+    @RolesAllowed({"user", "admin"})
+    public String getUserDogs() {
+        String thisuser = securityContext.getUserPrincipal().getName();
+        EntityManager em = EMF.createEntityManager();
+        
+        DogsDTO dogs = DOGFACADE.getUserDogs(thisuser);
+        
+        return GSON.toJson(dogs);
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("admin")
     @RolesAllowed("admin")
     public String getFromAdmin() {
@@ -106,5 +156,27 @@ public class UserResource {
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
     
+    public static void main(String[] args) {
+        String thisuser = "user";
+        EntityManager em = EMF.createEntityManager();
+        
+        //DogsDTO dogs = DOGFACADE.getUserDogs(thisuser);
+        String let ="{\"name\": \"NyeTEST\",\n" +
+"            \"dateOfBirth\": \"01/11/2011\",\n" +
+"            \"info\": \"newest\"}";
+        
+        UserResource res = new UserResource();
+//        
+        String dog = res.addDog(let, 5);
+    }
+    
 }
+//
+//
+//        em.getTransaction().begin();
+//        Dog firstDog = new Dog("Dogtest", "10/11/2004", "Test dog");
+//        Breed breed = new Breed("Hunderace", "En lille hund");
+//        firstDog.setBoth(user, breed);
+//        em.persist(firstDog);
+//        em.getTransaction().commit();
 
