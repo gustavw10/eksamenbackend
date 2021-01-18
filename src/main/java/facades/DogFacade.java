@@ -12,6 +12,7 @@ import entities.Breed;
 //import entities.Breed;
 import entities.Dog;
 import entities.User;
+import errorhandling.NotFoundException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import utils.EMF_Creator;
@@ -40,13 +41,13 @@ public class DogFacade {
         return emf.createEntityManager();
     }
     
-     public SearchesDTO getSearchDTO(){
+     public SearchesDTO getSearchDTO() throws NotFoundException{
         EntityManager em = getEntityManager();
         
          try {
             SearchesDTO search = new SearchesDTO(em.createQuery("SELECT e FROM SearchDate e ").getResultList());
             if (search == null) {
-                throw new UnsupportedOperationException("error handler coming here");
+                throw new NotFoundException("Could not find anything with the given query.");
             } else {
                 return search;
             }
@@ -55,13 +56,13 @@ public class DogFacade {
         }
     }
     
-    public DogsDTO getUserDogs(String user){
+    public DogsDTO getUserDogs(String user) throws NotFoundException{
         EntityManager em = getEntityManager();
         
          try {
             DogsDTO dogs = new DogsDTO(user, em.createQuery("SELECT d from Dog d " ).getResultList());
             if (dogs == null) {
-                throw new UnsupportedOperationException("error handler coming here");
+                throw new NotFoundException("Could not find anything with the given query.");
             } else {
                 return dogs;
             }

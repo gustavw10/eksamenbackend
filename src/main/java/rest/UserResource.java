@@ -48,8 +48,7 @@ import utils.HttpUtils;
 
 /**
  * REST Web Service
- *
- * @author maddy
+ 
  */
 
 
@@ -129,36 +128,6 @@ public class UserResource {
         
         return GSON.toJson(search);
     }
-    
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Path("addDog")
-//    @RolesAllowed({"user", "admin"})
-//    public String addDog(String dogo, long breed) {
-//        String thisuser = securityContext.getUserPrincipal().getName();
-//        String thisuser = "user";
-//        EntityManager em = EMF.createEntityManager();
-//        User user = em.find(User.class, thisuser);
-//        Breed br = em.find(Breed.class, breed);
-//        DogDTO dog = GSON.fromJson(dogo, DogDTO.class);
-//        em.getTransaction().begin();
-//        
-//        Dog dogToAdd = new Dog(dog.getName(), dog.getDateOfBirth(), dog.getInfo());  
-//        dogToAdd.setBoth(user, br);
-//        
-//        System.out.println("user: " + dogToAdd.getUser().getUserName());
-//        System.out.println("breed: " + dogToAdd.getBreed().getName());
-//        
-//        em.persist(dogToAdd);
-//        em.getTransaction().commit();
-//        
-////        
-////        DogDTO dogToAdd = GSON.fromJson(dog, DogDTO.class);
-////        DogDTO dogFinal = DOGFACADE.addDog(dogToAdd, user, breed);
-//        
-////        return GSON.toJson(dogFinal);
-//        return "";
-//    }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
