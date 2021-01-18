@@ -226,7 +226,4 @@ public class UserResource {
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
     
-    public static void main(String[] args) {
-        
-    }
 }
