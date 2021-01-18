@@ -16,7 +16,7 @@
       <property name="eclipselink.logging.level.sql" value="INFO"/>
       <property name="eclipselink.logging.parameters" value="true"/>
       <!-- In PRODUCTION the values below, will be overriden by utils.EMF_Creator -->
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://conphas.com:3306/eksamen"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/atempWithDate"/>
       <property name="javax.persistence.jdbc.user" value="dev"/>
       <property name="javax.persistence.jdbc.password" value="ax2"/>
     </properties>

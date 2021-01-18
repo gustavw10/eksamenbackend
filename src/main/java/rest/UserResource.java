@@ -21,6 +21,7 @@ import dtos.DogDTO;
 import dtos.SearchesDTO;
 import entities.Breed;
 import entities.SearchDate;
+import errorhandling.NotFoundException;
 import facades.DogFacade;
 import facades.UserFacade;
 import java.io.IOException;
@@ -120,7 +121,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("searches")
     @RolesAllowed({"user", "admin"})
-    public String getSearches() {
+    public String getSearches() throws NotFoundException {
         String thisuser = securityContext.getUserPrincipal().getName();
         EntityManager em = EMF.createEntityManager();
         
@@ -207,7 +208,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("dogs")
     @RolesAllowed({"user", "admin"})
-    public String getUserDogs() {
+    public String getUserDogs() throws NotFoundException {
         String thisuser = securityContext.getUserPrincipal().getName();
         EntityManager em = EMF.createEntityManager();
         
