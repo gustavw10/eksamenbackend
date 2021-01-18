@@ -24,20 +24,21 @@ import org.junit.jupiter.api.Test;
 
 public class UserResourceTest {
 
-    private static final int SERVER_PORT = 7777;
-    private static final String SERVER_URL = "http://localhost/api";
-    private static User u1, u2;
-
-    static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
-    private static HttpServer httpServer;
-    private static EntityManagerFactory emf;
-
+//    private static final int SERVER_PORT = 7777;
+//    private static final String SERVER_URL = "http://localhost/api";
+//    private static User u1, u2;
+//
+//    static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
+//    private static HttpServer httpServer;
+//    private static EntityManagerFactory emf;
+//
 //    static HttpServer startServer() {
 //        ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
 //        return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
 //    }
 //
 //    @BeforeAll
+//    @Disabled
 //    public static void setUpClass() {
 //        //This method must be called before you request the EntityManagerFactory
 //        EMF_Creator.startREST_TestWithDB();
@@ -51,6 +52,7 @@ public class UserResourceTest {
 //    }
 //
 //    @AfterAll
+//    @Disabled
 //    public static void closeTestServer() {
 //        //System.in.read();
 //
@@ -62,6 +64,7 @@ public class UserResourceTest {
 //    // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
 //    //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
 //    @BeforeEach
+//    @Disabled
 //    public void setUp() {
 //        EntityManager em = emf.createEntityManager();
 //        u1 = new User("Some txt", "More text");
@@ -76,13 +79,14 @@ public class UserResourceTest {
 //            em.close();
 //        }
 //    }
-//
+//    @Disabled
 //    @Test
 //    public void testServerIsUp() {
 //        given().when().get("/info").then().statusCode(200);
 //    }
 //
 //    //This test assumes the database contains two rows
+//    @Disabled
 //    @Test
 //    public void testDummyMsg() throws Exception {
 //        given()
@@ -92,7 +96,7 @@ public class UserResourceTest {
 //                .statusCode(HttpStatus.OK_200.getStatusCode())
 //                .body("msg", equalTo("Hello World"));
 //    }
-//
+//    @Disabled
 //    @Test
 //    public void testCount() throws Exception {
 //        given()

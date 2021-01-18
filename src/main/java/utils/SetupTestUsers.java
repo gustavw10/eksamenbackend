@@ -44,7 +44,6 @@ public class SetupTestUsers {
     both.addRole(userRole);
     both.addRole(adminRole);
     
-    
         firstDog.setBoth(user, breed);
         secDog.setBoth(admin, breed);
         thirdDog.setBoth(admin, breedTwo);
