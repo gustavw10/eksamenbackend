@@ -18,10 +18,13 @@ import entities.Dog;
 import entities.User;
 import dtos.DogsDTO;
 import dtos.DogDTO;
+import dtos.SearchesDTO;
 import entities.Breed;
+import entities.SearchDate;
 import facades.DogFacade;
 import facades.UserFacade;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import javax.annotation.security.RolesAllowed;
@@ -29,6 +32,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -113,6 +117,19 @@ public class UserResource {
         return "{\"msg\": \"Hello, user. You are logged into '" + thisuser + "'\"}";
     }
     
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("searches")
+    @RolesAllowed({"user", "admin"})
+    public String getSearches() {
+        String thisuser = securityContext.getUserPrincipal().getName();
+        EntityManager em = EMF.createEntityManager();
+        
+        SearchesDTO search = DOGFACADE.getSearchDTO();
+        
+        return GSON.toJson(search);
+    }
+    
 //    @POST
 //    @Produces(MediaType.APPLICATION_JSON)
 //    @Path("addDog")
@@ -143,30 +160,42 @@ public class UserResource {
 //        return "";
 //    }
     
-//    @PUT
-//    @Path("authoredit/{id}")
-//    @Produces({MediaType.APPLICATION_JSON})
-//    @Consumes({MediaType.APPLICATION_JSON})
-//    public String updatePerson(@PathParam("id") long id,  String person) {
-//        AuthorDTO pers = GSON.fromJson(person, AuthorDTO.class);
-//        pers.setId(id);
-//        AuthorDTO returnPerson = AUTFACADE.editAuthor(pers);
-//        return GSON.toJson(returnPerson);
-    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("addDog/{id}")
     @RolesAllowed({"user", "admin"})
     public String addDog(@PathParam("id") long id, String dog) {
-        
-        String thisuser = securityContext.getUserPrincipal().getName();
         //String thisuser = "admin";
+        String thisuser = securityContext.getUserPrincipal().getName();
         EntityManager em = EMF.createEntityManager();
         
         DogDTO dogToAdd = GSON.fromJson(dog, DogDTO.class);
         DogDTO dogReturn = DOGFACADE.addUserDog(dogToAdd, thisuser, id);
              
+        return GSON.toJson(dogReturn);
+    }
+    
+    @DELETE
+    @Path("deleteDog/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String deleteDog(@PathParam("id") long id)   {
+        DogDTO dog = DOGFACADE.deleteDog(id);
+        return GSON.toJson(dog);
+    }
+    
+    @PUT
+    @Path("editDog/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    @RolesAllowed({"user", "admin"})
+    public String updateDog(@PathParam("id") long id,  String dog) {
+        String thisuser = securityContext.getUserPrincipal().getName();
+        EntityManager em = EMF.createEntityManager();
+        
+        DogDTO dogToAdd = GSON.fromJson(dog, DogDTO.class);
+        DogDTO dogReturn = DOGFACADE.editUserDog(dogToAdd, id);
+        
         return GSON.toJson(dogReturn);
     }
     
@@ -193,7 +222,14 @@ public class UserResource {
         BreedFactDTO breedFact = GSON.fromJson(breed3, BreedFactDTO.class);
         
         BreedCombinedDTO comb = new BreedCombinedDTO(breedFact, breedInfo, breedLink);
-        BreedCombinedDTO test = new BreedCombinedDTO("boxer", "info here", "wik", "img", "fact here");
+        
+        EntityManager em = EMF.createEntityManager();
+        em.getTransaction().begin();
+        SearchDate date = new SearchDate(breedInfo.getBreed());
+        em.persist(date);
+        em.getTransaction().commit();
+        em.close();
+        
         return GSON.toJson(comb);
     }
     
@@ -222,13 +258,5 @@ public class UserResource {
     
     public static void main(String[] args) {
         
-        EntityManager em = EMF.createEntityManager();
-        //DogsDTO dogs = DOGFACADE.getUserDogs(thisuser);
-        String let ="{\"name\": \"justforSure\",\n" +
-"            \"dateOfBirth\": \"01/11/2011\",\n" +
-"            \"info\": \"newest\"}";
-        
-        UserResource res = new UserResource();        
-        String dog = res.addDog(5, let);
     }
 }

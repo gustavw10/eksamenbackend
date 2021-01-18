@@ -7,12 +7,14 @@ package facades;
 
 import dtos.DogDTO;
 import dtos.DogsDTO;
+import dtos.SearchesDTO;
 import entities.Breed;
 //import entities.Breed;
 import entities.Dog;
 import entities.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import utils.EMF_Creator;
 
 /**
  *
@@ -38,11 +40,26 @@ public class DogFacade {
         return emf.createEntityManager();
     }
     
+     public SearchesDTO getSearchDTO(){
+        EntityManager em = getEntityManager();
+        
+         try {
+            SearchesDTO search = new SearchesDTO(em.createQuery("SELECT e FROM SearchDate e ").getResultList());
+            if (search == null) {
+                throw new UnsupportedOperationException("error handler coming here");
+            } else {
+                return search;
+            }
+        } finally {
+            em.close();
+        }
+    }
+    
     public DogsDTO getUserDogs(String user){
         EntityManager em = getEntityManager();
         
          try {
-            DogsDTO dogs = new DogsDTO(user, em.createQuery("SELECT d from Dog d " + "").getResultList());
+            DogsDTO dogs = new DogsDTO(user, em.createQuery("SELECT d from Dog d " ).getResultList());
             if (dogs == null) {
                 throw new UnsupportedOperationException("error handler coming here");
             } else {
@@ -67,6 +84,39 @@ public class DogFacade {
         em.close();
         
         return new DogDTO(dogToAdd);
+    }
+    
+     public DogDTO editUserDog(DogDTO dogDTO, long id) {
+        EntityManager em = getEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            Dog dog = em.find(Dog.class, id);
+            dog.setName(dogDTO.getName());
+            dog.setInfo(dogDTO.getInfo());
+            dog.setDateOfBirth(dogDTO.getDateOfBirth());
+            em.getTransaction().commit();
+            return new DogDTO(dog);
+        } finally {
+            em.close();
+        }
+    }
+     
+     public DogDTO deleteDog(long id) {
+        EntityManager em = getEntityManager();
+        Dog dog = em.find(Dog.class, id);
+        if (dog == null) {
+            //throw new PersonNotFoundException("Could not delete, provided id does not exist");
+        } else {
+            try {
+                em.getTransaction().begin();
+                em.remove(dog);
+                em.getTransaction().commit();
+            } finally {
+                em.close();
+            }
+        }
+        return new DogDTO(dog);
     }
     
 }
